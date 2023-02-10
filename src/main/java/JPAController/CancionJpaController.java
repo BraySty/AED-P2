@@ -5,7 +5,6 @@
 package JPAController;
 
 import Clases.Cancion;
-import exceptions.PreexistingEntityException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -32,9 +31,9 @@ public class CancionJpaController {
     /**
      * Metodo para ingresar una Cancion.
      * @param cancion la Cancion a ingresar.
-     * @return Regresa false si ya existe
+     * @return Regresa false si ya existe.
      */
-    public boolean create(Cancion cancion) throws PreexistingEntityException, Exception {
+    public boolean create(Cancion cancion) {
         EntityManager em = null;
         boolean operacion = false;
         if (findCancion(cancion.getId()) != null) {
@@ -129,10 +128,21 @@ public class CancionJpaController {
         }
     }
     
+    /**
+     * Metodo que devuelve una lista de canciones.
+     * @return Regresa un List<Cancion> con la lista de canciones.
+     */
     public List<Cancion> findCancionEntities() {
         return findCancionEntities(true, -1, -1);
     }
 
+    /**
+     * Metodo que devuelve una lista de canciones empezando y terminando
+     * por los valores introducidos.
+     * @param maxResults El limite de la lista.
+     * @param firstResult El inicio de la lista.
+     * @return Regresa un List<Cancion> con la lista de canciones.
+     */
     public List<Cancion> findCancionEntities(int maxResults, int firstResult) {
         return findCancionEntities(false, maxResults, firstResult);
     }
@@ -142,7 +152,7 @@ public class CancionJpaController {
      * @param all Booleano para elegir si recorger todos o por valores especificos.
      * @param maxResults int con el maximo de resultados.
      * @param firstResult int con el inicio del resultado.
-     * @return Regresa un List con los clientes.
+     * @return Regresa un List con las Cancion.
      */
     private List<Cancion> findCancionEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();

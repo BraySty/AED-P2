@@ -44,6 +44,13 @@ public class Cliente implements Serializable {
     public Cliente() {
     }
 
+    public Cliente(int id, String nombre, String contraseña) {
+        this.id = id;
+        this.nombre = nombre;
+        this.contraseña = contraseña;
+        cancionCliente = new LinkedList<>();
+    }
+    
     public Cliente(String nombre, String contraseña) {
         this.nombre = nombre;
         this.contraseña = contraseña;
@@ -89,11 +96,7 @@ public class Cliente implements Serializable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Cliente{");
-        sb.append("id = ").append(id);
-        sb.append(", nombre = ").append(nombre);
-        sb.append(", contrase\u00f1a = ").append(contraseña);
-        sb.append('}');
+        sb.append(nombre);
         return sb.toString();
     }
     

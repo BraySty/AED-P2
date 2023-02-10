@@ -83,6 +83,10 @@ public class ClienteCancion implements Serializable {
     public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
-    
+
+    @Override
+    public String toString() {
+        return "ClienteCancion{" + "cancion=" + cancion + ", cliente=" + cliente + ", id=" + id + ", fecha=" + fecha + '}';
+    }
     
 }

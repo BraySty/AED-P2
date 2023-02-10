@@ -5,11 +5,15 @@
 package Launcher;
 
 import Clases.Cliente;
+import Clases.ClienteCancion;
+import JPAController.ClienteCancionJpaController;
 import JPAController.ClienteJpaController;
+import java.util.List;
 import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import org.hibernate.service.spi.ServiceException;
 
 /**
@@ -21,6 +25,8 @@ public class Launcher extends javax.swing.JFrame {
     private static EntityManagerFactory emf;
     private String dbUser = "root";
     private String dbPassword = "";
+    private Cliente cliente;
+    private final String[] titulo = new String[]{"Cancion", "Cantante", "Repeticiones", "Fecha"};
     
     /**
      * Creates new form Launcher
@@ -28,11 +34,11 @@ public class Launcher extends javax.swing.JFrame {
     public Launcher() {
         initComponents();
         emf = Persistence.createEntityManagerFactory("persistencia");
+        inicializarTabla();
     }
 
     public EntityManagerFactory setPropiedades() {
         EntityManagerFactory emf = null;
-        
         try {
             Properties props = new Properties();
             props.setProperty("javax.persistence.jdbc.driver", "org.mariadb.jdbc.Driver");
@@ -45,6 +51,56 @@ public class Launcher extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Revise el usuario y la contraseña", "Error", JOptionPane.ERROR_MESSAGE);
         }
         return emf;
+    }
+    
+    /**
+     * Inicializa las tablas al empezar la aplicacion.
+     */
+    private void inicializarTabla() {
+        // Crea la nueva tabla.
+        DefaultTableModel dtm = new DefaultTableModel() {
+            // Permite seleccionar que celdas son editables.
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == -1;
+            }
+        };
+        // Añade las columnas a la tabla.
+        dtm.setColumnIdentifiers(titulo);
+        jTableHistorial.setModel(dtm);
+        cargarDatos();
+    }
+    
+    /**
+     * Carga los datos en la tabla.
+     */
+    private void cargarDatos() {
+        ClienteCancionJpaController ccJpaC = new ClienteCancionJpaController(emf);
+        List<ClienteCancion> asd = ccJpaC.findClienteCancionEntities();
+        List<Object[]> sssss = ccJpaC.findClienteCancionCount();
+//        for (ClienteCancion clienteCancion : asd) {
+//            System.out.println(clienteCancion.toString());
+//            Object[] rowData = new Object[] {
+//                clienteCancion.getCancion().getNombre(),
+//                clienteCancion.getCliente().getNombre(),
+//                12,
+//                clienteCancion.getFecha()
+//            };
+//            addData(rowData);
+//        }
+        for (Object[] ssss : sssss) {
+            addData(ssss);
+        }
+    }
+    
+    /**
+     * Se encarga de escribir datos a la tabla general.
+     * @param rowData 
+     */
+    public void addData(Object[] rowData) {
+        //Pasa la informacion a la pantalla principal.
+        DefaultTableModel dtm = (DefaultTableModel)jTableHistorial.getModel();
+        dtm.addRow(rowData);
     }
     
     /**
@@ -66,7 +122,7 @@ public class Launcher extends javax.swing.JFrame {
         jButtonCrearUsuario = new javax.swing.JButton();
         jPanelHistorial = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTableHistorial = new javax.swing.JTable();
         jTabbedAdministracion = new javax.swing.JTabbedPane();
         jTabbedClientes = new javax.swing.JTabbedPane();
         jTabbedCanciones = new javax.swing.JTabbedPane();
@@ -145,7 +201,7 @@ public class Launcher extends javax.swing.JFrame {
 
         jTabbedPanel.addTab("Inicio Sesion", jPanelInicioSesion);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTableHistorial.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -156,7 +212,7 @@ public class Launcher extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jTableHistorial);
 
         javax.swing.GroupLayout jPanelHistorialLayout = new javax.swing.GroupLayout(jPanelHistorial);
         jPanelHistorial.setLayout(jPanelHistorialLayout);
@@ -164,8 +220,8 @@ public class Launcher extends javax.swing.JFrame {
             jPanelHistorialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelHistorialLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(264, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanelHistorialLayout.setVerticalGroup(
             jPanelHistorialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -247,7 +303,7 @@ public class Launcher extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 679, Short.MAX_VALUE)
+            .addComponent(jTabbedPanel)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -274,7 +330,7 @@ public class Launcher extends javax.swing.JFrame {
         if (cliente == null) {
             JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrecto", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            clienteJpaC.delete(cliente.getId());
+            this.cliente = cliente;
         }
     }//GEN-LAST:event_jButtonLogInActionPerformed
 
@@ -355,7 +411,7 @@ public class Launcher extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedCanciones;
     private javax.swing.JTabbedPane jTabbedClientes;
     private javax.swing.JTabbedPane jTabbedPanel;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTableHistorial;
     private javax.swing.JTextField jTextFieldClientePassword;
     private javax.swing.JTextField jTextFieldClienteUsuario;
     private javax.swing.JTextField jTextFieldMariaDBPassword;

@@ -156,10 +156,21 @@ public class ClienteJpaController {
         return cliente;
     }
     
+    /**
+     * Metodo que devuelve una lista de canciones.
+     * @return Regresa un List<Cliente> con la lista de canciones.
+     */
     public List<Cliente> findClienteEntities() {
         return findClienteEntities(true, -1, -1);
     }
 
+    /**
+     * Metodo que devuelve una lista de clientes empezando y terminando
+     * por los valores introducidos.
+     * @param maxResults El limite de la lista.
+     * @param firstResult El inicio de la lista.
+     * @return Regresa un List<Cliente> con la lista de clientes.
+     */
     public List<Cliente> findClienteEntities(int maxResults, int firstResult) {
         return findClienteEntities(false, maxResults, firstResult);
     }

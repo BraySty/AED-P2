@@ -76,10 +76,7 @@ public class Cancion implements Serializable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Cancion{");
-        sb.append("id = ").append(id);
-        sb.append(", nombre = ").append(nombre);
-        sb.append('}');
+        sb.append(nombre);
         return sb.toString();
     }
     
