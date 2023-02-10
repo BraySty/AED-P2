@@ -1,4 +1,4 @@
-package codigo.exceptions;
+package exceptions;
 
 public class PreexistingEntityException extends Exception {
     public PreexistingEntityException(String message, Throwable cause) {

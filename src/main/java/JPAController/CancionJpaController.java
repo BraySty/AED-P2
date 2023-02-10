@@ -5,12 +5,10 @@
 package JPAController;
 
 import Clases.Cancion;
-import codigo.exceptions.NonexistentEntityException;
-import codigo.exceptions.PreexistingEntityException;
+import exceptions.PreexistingEntityException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -31,66 +29,103 @@ public class CancionJpaController {
         return emf.createEntityManager();
     }
     
-    public void create(Cancion cancion) throws PreexistingEntityException, Exception {
+    /**
+     * Metodo para ingresar una Cancion.
+     * @param cancion la Cancion a ingresar.
+     * @return Regresa false si ya existe
+     */
+    public boolean create(Cancion cancion) throws PreexistingEntityException, Exception {
         EntityManager em = null;
-        try {
-            em = getEntityManager();
-            em.getTransaction().begin();
-            em.persist(cancion);
-            em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findCancion(cancion.getId()) != null) {
-                throw new PreexistingEntityException("Cancion " + cancion + " ya existe.", ex);
-            }
-            throw ex;
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
-    }
-    
-    public void edit(Cancion cancion) throws NonexistentEntityException, Exception {
-        EntityManager em = null;
-        try {
-            em = getEntityManager();
-            em.getTransaction().begin();
-            cancion = em.merge(cancion);
-            em.getTransaction().commit();
-        } catch (Exception ex) {
-            String msg = ex.getLocalizedMessage();
-            if (msg == null || msg.length() == 0) {
-                int id = cancion.getId();
-                if (findCancion(id) == null) {
-                    throw new NonexistentEntityException("La cancion " + id + " no existe.");
+        boolean operacion = false;
+        if (findCancion(cancion.getId()) != null) {
+            System.out.println("Cancion " + cancion + " ya existe.");
+        } else {
+            try {
+                em = getEntityManager();
+                em.getTransaction().begin();
+                em.persist(cancion);
+                em.getTransaction().commit();
+                operacion = true;
+            } catch (Exception ex) {
+                throw ex;
+            } finally {
+                if (em != null) {
+                    em.close();
                 }
             }
-            throw ex;
-        } finally {
-            if (em != null) {
-                em.close();
-            }
         }
+        return operacion;
     }
     
-    public void destroy(int id) throws NonexistentEntityException {
+    /**
+     * Metodo para actualizar una Cancion.
+     * @param cancion La Cancion a actualizar.
+     * @return Regresa true si se actualizo, false si no.
+     */
+    public boolean update(Cancion cancion){
         EntityManager em = null;
-        try {
-            em = getEntityManager();
-            em.getTransaction().begin();
+        boolean operacion = false;
+        if (findCancion(cancion.getId()) == null) {
+                System.out.println("Cancion " + cancion + " no existe.");
+        } else {
+            try {
+                em = getEntityManager();
+                em.getTransaction().begin();
+                em.merge(cancion);
+                em.getTransaction().commit();
+                operacion = true;
+            } catch (Exception ex) {
+                throw ex;
+            } finally {
+                if (em != null) {
+                    em.close();
+                }
+            }
+        }
+        return operacion;
+    }
+    
+    /**
+     * Metodo para eliminar una Cancion.
+     * @param id int con el id que se elimina.
+     * @return Regresa true si se elimino, false si no.
+     */
+    public boolean delete(int id) {
+        EntityManager em = null;
+        boolean operacion = false;
+        Cancion cancionTemp = findCancion(id);
+        if (cancionTemp == null) {
+                System.out.println("Cancion " + id + " no existe.");
+        } else {
             Cancion cancion;
             try {
+                em = getEntityManager();
+                em.getTransaction().begin();
                 cancion = em.getReference(Cancion.class, id);
                 cancion.getId();
-            } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("La cancion " + id + " no existe.", enfe);
+                em.remove(cancion);
+                em.getTransaction().commit();
+                operacion = true;
+            } finally {
+                if (em != null) {
+                    em.close();
+                }
             }
-            em.remove(cancion);
-            em.getTransaction().commit();
+        }
+        return operacion;
+    }
+    
+    /**
+     * Busca la cancion por su id.
+     * @param id Int con el id.
+     * @return Regresa la cancion si existe, null si no existe.
+     */
+    public Cancion findCancion(int id) {
+        EntityManager em = getEntityManager();
+        try {
+            return em.find(Cancion.class, id);
         } finally {
-            if (em != null) {
-                em.close();
-            }
+            em.close();
         }
     }
     
@@ -102,6 +137,13 @@ public class CancionJpaController {
         return findCancionEntities(false, maxResults, firstResult);
     }
 
+    /**
+     * 
+     * @param all Booleano para elegir si recorger todos o por valores especificos.
+     * @param maxResults int con el maximo de resultados.
+     * @param firstResult int con el inicio del resultado.
+     * @return Regresa un List con los clientes.
+     */
     private List<Cancion> findCancionEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
@@ -118,15 +160,10 @@ public class CancionJpaController {
         }
     }
     
-    public Cancion findCancion(int id) {
-        EntityManager em = getEntityManager();
-        try {
-            return em.find(Cancion.class, id);
-        } finally {
-            em.close();
-        }
-    }
-    
+    /**
+     * Regresa la cuenta de todas las canciones.
+     * @return Regresa un int.
+     */
     public int getCancionCount() {
         EntityManager em = getEntityManager();
         try {

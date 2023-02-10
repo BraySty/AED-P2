@@ -5,13 +5,12 @@
 package JPAController;
 
 import Clases.Cliente;
-import codigo.exceptions.NonexistentEntityException;
-import codigo.exceptions.PreexistingEntityException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
@@ -31,78 +30,148 @@ public class ClienteJpaController {
         return emf.createEntityManager();
     }
     
-    public void create(Cliente cliente) throws PreexistingEntityException, Exception {
+    /**
+     * Metodo para ingresar un Cliente.
+     * @param cliente El Cliente a ingresar.
+     * @return Regresa true si se creo, false si no.
+     */
+    public boolean create(Cliente cliente) {
         EntityManager em = null;
-        try {
-            em = getEntityManager();
-            em.getTransaction().begin();
-            em.persist(cliente);
-            em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findCancion(cliente.getId()) != null) {
-                throw new PreexistingEntityException("Cliente " + cliente + " ya existe.", ex);
-            }
-            throw ex;
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
-    }
-    
-    public void edit(Cliente cliente) throws NonexistentEntityException, Exception {
-        EntityManager em = null;
-        try {
-            em = getEntityManager();
-            em.getTransaction().begin();
-            cliente = em.merge(cliente);
-            em.getTransaction().commit();
-        } catch (Exception ex) {
-            String msg = ex.getLocalizedMessage();
-            if (msg == null || msg.length() == 0) {
-                int id = cliente.getId();
-                if (findCancion(id) == null) {
-                    throw new NonexistentEntityException("El cliente " + id + " no existe.");
+        boolean operacion = false;
+        if (findCliente(cliente.getId()) != null) {
+                System.out.println("Cliente " + cliente + " ya existe.");
+        } else {
+            try {
+                em = getEntityManager();
+                em.getTransaction().begin();
+                em.persist(cliente);
+                em.getTransaction().commit();
+                operacion = true;
+            } catch (Exception ex) {
+                throw ex;
+            } finally {
+                if (em != null) {
+                    em.close();
                 }
             }
-            throw ex;
-        } finally {
-            if (em != null) {
-                em.close();
-            }
         }
+        return operacion;
     }
     
-    public void destroy(int id) throws NonexistentEntityException {
+    /**
+     * Metodo para actualizar un Cliente.
+     * @param cliente El Clente a actualizar.
+     * @return Regresa true si se actualizo, false si no.
+     */
+    public boolean update(Cliente cliente) {
         EntityManager em = null;
-        try {
-            em = getEntityManager();
-            em.getTransaction().begin();
+        boolean operacion = false;
+        if (findCliente(cliente.getId()) == null) {
+                System.out.println("Cliente " + cliente + " no existe.");
+        } else {
+            try {
+                em = getEntityManager();
+                em.getTransaction().begin();
+                em.merge(cliente);
+                em.getTransaction().commit();
+                operacion = true;
+            } catch (Exception ex) {
+                throw ex;
+            } finally {
+                if (em != null) {
+                    em.close();
+                }
+            }
+        }
+        return operacion;
+    }
+    
+    /**
+     * Metodo para eliminar un Cliente.
+     * @param id int con el id que se elimina.
+     * @return Regresa true si se elimino, false si no.
+     */
+    public boolean delete(int id) {
+        EntityManager em = null;
+        boolean operacion = false;
+        Cliente clienteTemp = findCliente(id);
+        if (clienteTemp == null) {
+                System.out.println("Cliente " + id + " no existe.");
+        } else {
             Cliente cliente;
             try {
+                em = getEntityManager();
+                em.getTransaction().begin();
                 cliente = em.getReference(Cliente.class, id);
                 cliente.getId();
-            } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("El cliente " + id + " no existe.", enfe);
-            }
-            em.remove(cliente);
-            em.getTransaction().commit();
-        } finally {
-            if (em != null) {
-                em.close();
+                em.remove(cliente);
+                em.getTransaction().commit();
+                operacion = true;
+            } finally {
+                if (em != null) {
+                    em.close();
+                }
             }
         }
+        return operacion;
     }
     
-    public List<Cliente> findCancionEntities() {
-        return findCancionEntities(true, -1, -1);
+    /**
+     * Busca el cliente por su id.
+     * @param id Int con el id.
+     * @return Regresa el cliente si existe, null si no existe.
+     */
+    public Cliente findCliente(int id) {
+        EntityManager em = getEntityManager();
+        Cliente cliente = null;
+        try {
+            cliente = em.find(Cliente.class, id);
+        } catch(NoResultException nre) {
+            System.out.println("El cliente con id " + id + " no existe.");
+        } finally {
+            em.close();
+        }
+        return cliente;
+    }
+    
+    /**
+     * Busca el Cliente por su nombre de usuario y contraseña
+     * @param usuario String con el nombre de usuario.
+     * @param password String con la contraseña.
+     * @return Regresa el cliente si existe, null si no existe.
+     */
+    public Cliente findCliente(String usuario, String password) {
+        EntityManager em = getEntityManager();
+        Cliente cliente = null;
+        try {
+            TypedQuery<Cliente> query = em.createQuery("SELECT c FROM Cliente c WHERE c.nombre = :name and c.contraseña = :password", Cliente.class);
+            query.setParameter("name", usuario);
+            query.setParameter("password", password);
+            cliente = query.getSingleResult();
+        } catch(NoResultException nre) {
+            System.err.println("El cliente con nombre" + usuario + " no existe.");
+        } finally {
+            em.close();
+        }
+        return cliente;
+    }
+    
+    public List<Cliente> findClienteEntities() {
+        return findClienteEntities(true, -1, -1);
     }
 
-    public List<Cliente> findCancionEntities(int maxResults, int firstResult) {
-        return findCancionEntities(false, maxResults, firstResult);
+    public List<Cliente> findClienteEntities(int maxResults, int firstResult) {
+        return findClienteEntities(false, maxResults, firstResult);
     }
 
-    private List<Cliente> findCancionEntities(boolean all, int maxResults, int firstResult) {
+    /**
+     * 
+     * @param all Booleano para elegir si recorger todos o por valores especificos.
+     * @param maxResults int con el maximo de resultados.
+     * @param firstResult int con el inicio del resultado.
+     * @return Regresa un List con los clientes.
+     */
+    private List<Cliente> findClienteEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
@@ -118,26 +187,23 @@ public class ClienteJpaController {
         }
     }
     
-    public Cliente findCancion(int id) {
+    /**
+     * Regresa la cuenta de todos los usuarios.
+     * @return Regresa un int.
+     */
+    public int getClienteCount() {
         EntityManager em = getEntityManager();
-        try {
-            return em.find(Cliente.class, id);
-        } finally {
-            em.close();
-        }
-    }
-    
-    public int getCancionCount() {
-        EntityManager em = getEntityManager();
+        int count = -1;
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
             Root<Cliente> rt = cq.from(Cliente.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
-            return ((Long) q.getSingleResult()).intValue();
+            count = ((Long) q.getSingleResult()).intValue();
         } finally {
             em.close();
         }
+        return count;
     }
     
 }

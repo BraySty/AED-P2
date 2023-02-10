@@ -46,10 +46,9 @@ public class ClienteCancion implements Serializable {
     public ClienteCancion() {
     }
 
-    public ClienteCancion(Cancion cancion, Cliente cliente, int id, Date fecha) {
+    public ClienteCancion(Cancion cancion, Cliente cliente, Date fecha) {
         this.cancion = cancion;
         this.cliente = cliente;
-        this.id = id;
         this.fecha = fecha;
     }
 

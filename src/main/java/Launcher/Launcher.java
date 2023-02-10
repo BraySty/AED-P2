@@ -4,9 +4,13 @@
  */
 package Launcher;
 
+import Clases.Cliente;
+import JPAController.ClienteJpaController;
 import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.swing.JOptionPane;
+import org.hibernate.service.spi.ServiceException;
 
 /**
  *
@@ -23,8 +27,26 @@ public class Launcher extends javax.swing.JFrame {
      */
     public Launcher() {
         initComponents();
+        emf = Persistence.createEntityManagerFactory("persistencia");
     }
 
+    public EntityManagerFactory setPropiedades() {
+        EntityManagerFactory emf = null;
+        
+        try {
+            Properties props = new Properties();
+            props.setProperty("javax.persistence.jdbc.driver", "org.mariadb.jdbc.Driver");
+            props.setProperty("hibernate.dialect", "org.hibernate.dialect.MariaDBDialect");
+            props.setProperty("javax.persistence.jdbc.url", "jdbc:mariadb://localhost:3306/karaoke?createDatabaseIfNotExist=true");
+            props.setProperty("javax.persistence.jdbc.user", dbUser);
+            props.setProperty("javax.persistence.jdbc.javax.persistence.jdbc.password", dbPassword);
+            emf = Persistence.createEntityManagerFactory("persistencia", props);
+        } catch (ServiceException se) {
+            JOptionPane.showMessageDialog(this, "Revise el usuario y la contraseña", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return emf;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -42,8 +64,12 @@ public class Launcher extends javax.swing.JFrame {
         jTextFieldClientePassword = new javax.swing.JTextField();
         jButtonLogIn = new javax.swing.JButton();
         jButtonCrearUsuario = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
-        jLabelUsuario = new javax.swing.JLabel();
+        jPanelHistorial = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jTabbedAdministracion = new javax.swing.JTabbedPane();
+        jTabbedClientes = new javax.swing.JTabbedPane();
+        jTabbedCanciones = new javax.swing.JTabbedPane();
         jPanelGestorConexion = new javax.swing.JPanel();
         jLabelMariaDBUusuario = new javax.swing.JLabel();
         jLabelMariaDBDPassword = new javax.swing.JLabel();
@@ -91,7 +117,7 @@ public class Launcher extends javax.swing.JFrame {
                             .addComponent(jLabelClienteUusuario))
                         .addGap(18, 18, 18)
                         .addGroup(jPanelInicioSesionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldClientePassword, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                            .addComponent(jTextFieldClientePassword, javax.swing.GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE)
                             .addComponent(jTextFieldClienteUsuario)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelInicioSesionLayout.createSequentialGroup()
                         .addComponent(jButtonCrearUsuario)
@@ -102,7 +128,7 @@ public class Launcher extends javax.swing.JFrame {
         jPanelInicioSesionLayout.setVerticalGroup(
             jPanelInicioSesionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelInicioSesionLayout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(103, Short.MAX_VALUE)
                 .addGroup(jPanelInicioSesionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelClienteUusuario)
                     .addComponent(jTextFieldClienteUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -110,7 +136,7 @@ public class Launcher extends javax.swing.JFrame {
                 .addGroup(jPanelInicioSesionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelClientePassword)
                     .addComponent(jTextFieldClientePassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 156, Short.MAX_VALUE)
+                .addGap(101, 101, 101)
                 .addGroup(jPanelInicioSesionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonLogIn)
                     .addComponent(jButtonCrearUsuario))
@@ -119,26 +145,40 @@ public class Launcher extends javax.swing.JFrame {
 
         jTabbedPanel.addTab("Inicio Sesion", jPanelInicioSesion);
 
-        jLabelUsuario.setText("Usuario: ");
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanelHistorialLayout = new javax.swing.GroupLayout(jPanelHistorial);
+        jPanelHistorial.setLayout(jPanelHistorialLayout);
+        jPanelHistorialLayout.setHorizontalGroup(
+            jPanelHistorialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelHistorialLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabelUsuario)
-                .addContainerGap(378, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(264, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        jPanelHistorialLayout.setVerticalGroup(
+            jPanelHistorialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelHistorialLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabelUsuario)
-                .addContainerGap(248, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
-        jTabbedPanel.addTab("tab3", jPanel1);
+        jTabbedPanel.addTab("Historial", jPanelHistorial);
+
+        jTabbedAdministracion.addTab("Usuarios", jTabbedClientes);
+        jTabbedAdministracion.addTab("Canciones", jTabbedCanciones);
 
         jLabelMariaDBUusuario.setText("Usuario");
 
@@ -173,7 +213,7 @@ public class Launcher extends javax.swing.JFrame {
                             .addComponent(jLabelMariaDBUusuario))
                         .addGap(18, 18, 18)
                         .addGroup(jPanelGestorConexionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldMariaDBPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                            .addComponent(jTextFieldMariaDBPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE)
                             .addComponent(jTextFieldMariaDBUsuario)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelGestorConexionLayout.createSequentialGroup()
                         .addComponent(jButtonDefault)
@@ -192,20 +232,22 @@ public class Launcher extends javax.swing.JFrame {
                 .addGroup(jPanelGestorConexionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelMariaDBDPassword)
                     .addComponent(jTextFieldMariaDBPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 156, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
                 .addGroup(jPanelGestorConexionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonAceptar)
                     .addComponent(jButtonDefault))
                 .addContainerGap())
         );
 
-        jTabbedPanel.addTab("Ajustes de conexion", jPanelGestorConexion);
+        jTabbedAdministracion.addTab("Ajustes de conexion", jPanelGestorConexion);
+
+        jTabbedPanel.addTab("Administracion", jTabbedAdministracion);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPanel)
+            .addComponent(jTabbedPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 679, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,17 +256,6 @@ public class Launcher extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButtonAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAceptarActionPerformed
-        dbUser = jTextFieldMariaDBUsuario.getText();
-        Properties props = new Properties();
-        props.setProperty("javax.persistence.jdbc.driver", "org.mariadb.jdbc.Driver");
-        props.setProperty("hibernate.dialect", "org.hibernate.dialect.MariaDBDialect");
-        props.setProperty("javax.persistence.jdbc.url", "jdbc:mariadb://localhost:3306/karaoke?createDatabaseIfNotExist=true");
-        props.setProperty("javax.persistence.jdbc.user", dbUser);
-        props.setProperty("javax.persistence.jdbc.javax.persistence.jdbc.password", dbPassword);
-        emf = Persistence.createEntityManagerFactory("persistencia", props);
-    }//GEN-LAST:event_jButtonAceptarActionPerformed
 
     private void jTabbedPanelStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPanelStateChanged
         int indexTab = jTabbedPanel.getSelectedIndex();
@@ -235,21 +266,42 @@ public class Launcher extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jTabbedPanelStateChanged
 
-    private void jButtonDefaultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDefaultActionPerformed
-        jTextFieldMariaDBUsuario.setText("root");
-        jTextFieldMariaDBPassword.setText("");
-    }//GEN-LAST:event_jButtonDefaultActionPerformed
-
     private void jButtonLogInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLogInActionPerformed
         String usuario = jTextFieldClienteUsuario.getText();
         String password = jTextFieldClientePassword.getText();
-        jLabelUsuario.setText("Usuario: " + usuario);
-        
+        ClienteJpaController clienteJpaC = new ClienteJpaController(emf);
+        Cliente cliente = clienteJpaC.findCliente(usuario, password);
+        if (cliente == null) {
+            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrecto", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            clienteJpaC.delete(cliente.getId());
+        }
     }//GEN-LAST:event_jButtonLogInActionPerformed
 
     private void jButtonCrearUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCrearUsuarioActionPerformed
-         // TODO add your handling code here:
+        String usuario = jTextFieldClienteUsuario.getText();
+        String password = jTextFieldClientePassword.getText();
+        if (!usuario.equals("") && !password.equals("")) {
+            ClienteJpaController clienteJpaC = new ClienteJpaController(emf);
+            clienteJpaC.create(new Cliente(usuario, password));
+        } else {
+            JOptionPane.showMessageDialog(this, "Uno de los campos esta vacio", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButtonCrearUsuarioActionPerformed
+
+    private void jButtonDefaultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDefaultActionPerformed
+        dbUser = "root";
+        dbPassword = "";
+        jTextFieldMariaDBUsuario.setText(dbUser);
+        jTextFieldMariaDBPassword.setText(dbPassword);
+        emf = setPropiedades();
+    }//GEN-LAST:event_jButtonDefaultActionPerformed
+
+    private void jButtonAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAceptarActionPerformed
+        dbUser = jTextFieldMariaDBUsuario.getText();
+        dbPassword = jTextFieldMariaDBPassword.getText();
+        emf = setPropiedades();
+    }//GEN-LAST:event_jButtonAceptarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -295,11 +347,15 @@ public class Launcher extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelClienteUusuario;
     private javax.swing.JLabel jLabelMariaDBDPassword;
     private javax.swing.JLabel jLabelMariaDBUusuario;
-    private javax.swing.JLabel jLabelUsuario;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelGestorConexion;
+    private javax.swing.JPanel jPanelHistorial;
     private javax.swing.JPanel jPanelInicioSesion;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTabbedPane jTabbedAdministracion;
+    private javax.swing.JTabbedPane jTabbedCanciones;
+    private javax.swing.JTabbedPane jTabbedClientes;
     private javax.swing.JTabbedPane jTabbedPanel;
+    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextFieldClientePassword;
     private javax.swing.JTextField jTextFieldClienteUsuario;
     private javax.swing.JTextField jTextFieldMariaDBPassword;

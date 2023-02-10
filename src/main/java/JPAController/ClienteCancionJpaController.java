@@ -5,8 +5,8 @@
 package JPAController;
 
 import Clases.ClienteCancion;
-import codigo.exceptions.NonexistentEntityException;
-import codigo.exceptions.PreexistingEntityException;
+import exceptions.NonexistentEntityException;
+import exceptions.PreexistingEntityException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
