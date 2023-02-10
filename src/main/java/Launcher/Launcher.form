@@ -126,6 +126,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Crear usuario"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonCrearUsuarioActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

@@ -4,7 +4,11 @@
  */
 package Launcher;
 
+import Clases.Cliente;
+import JPAController.ClienteJpaController;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -23,8 +27,21 @@ public class Launcher extends javax.swing.JFrame {
      */
     public Launcher() {
         initComponents();
+        emf = setPropiedades();
     }
 
+    public EntityManagerFactory setPropiedades() {
+        EntityManagerFactory emf = null;
+        Properties props = new Properties();
+        props.setProperty("javax.persistence.jdbc.driver", "org.mariadb.jdbc.Driver");
+        props.setProperty("hibernate.dialect", "org.hibernate.dialect.MariaDBDialect");
+        props.setProperty("javax.persistence.jdbc.url", "jdbc:mariadb://localhost:3306/karaoke?createDatabaseIfNotExist=true");
+        props.setProperty("javax.persistence.jdbc.user", dbUser);
+        props.setProperty("javax.persistence.jdbc.javax.persistence.jdbc.password", dbPassword);
+        emf = Persistence.createEntityManagerFactory("persistencia", props);
+        return emf;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -72,6 +89,11 @@ public class Launcher extends javax.swing.JFrame {
         });
 
         jButtonCrearUsuario.setText("Crear usuario");
+        jButtonCrearUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCrearUsuarioActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanelInicioSesionLayout = new javax.swing.GroupLayout(jPanelInicioSesion);
         jPanelInicioSesion.setLayout(jPanelInicioSesionLayout);
@@ -200,7 +222,7 @@ public class Launcher extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
+            .addComponent(jTabbedPanel)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -212,13 +234,8 @@ public class Launcher extends javax.swing.JFrame {
 
     private void jButtonAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAceptarActionPerformed
         dbUser = jTextFieldMariaDBUsuario.getText();
-        Properties props = new Properties();
-        props.setProperty("javax.persistence.jdbc.driver", "org.mariadb.jdbc.Driver");
-        props.setProperty("hibernate.dialect", "org.hibernate.dialect.MariaDBDialect");
-        props.setProperty("javax.persistence.jdbc.url", "jdbc:mariadb://localhost:3306/karaoke?createDatabaseIfNotExist=true");
-        props.setProperty("javax.persistence.jdbc.user", dbUser);
-        props.setProperty("javax.persistence.jdbc.javax.persistence.jdbc.password", dbPassword);
-        emf = Persistence.createEntityManagerFactory("persistencia", props);
+        dbPassword = jTextFieldMariaDBPassword.getText();
+        emf = setPropiedades();
     }//GEN-LAST:event_jButtonAceptarActionPerformed
 
     private void jTabbedPanelStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPanelStateChanged
@@ -231,16 +248,31 @@ public class Launcher extends javax.swing.JFrame {
     }//GEN-LAST:event_jTabbedPanelStateChanged
 
     private void jButtonDefaultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDefaultActionPerformed
-        jTextFieldMariaDBUsuario.setText("root");
-        jTextFieldMariaDBPassword.setText("");
+        dbUser = "root";
+        dbPassword = "";
+        jTextFieldMariaDBUsuario.setText(dbUser);
+        jTextFieldMariaDBPassword.setText(dbPassword);
+        emf = setPropiedades();
     }//GEN-LAST:event_jButtonDefaultActionPerformed
 
     private void jButtonLogInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLogInActionPerformed
         String usuario = jTextFieldClienteUsuario.getText();
         String password = jTextFieldClientePassword.getText();
-        jLabelUsuario.setText("Usuario: " + usuario);
+        ClienteJpaController clienteJpaC = new ClienteJpaController(emf);
+        clienteJpaC.findCliente(new Cliente(usuario, password));
         
     }//GEN-LAST:event_jButtonLogInActionPerformed
+
+    private void jButtonCrearUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCrearUsuarioActionPerformed
+        String usuario = jTextFieldClienteUsuario.getText();
+        String password = jTextFieldClientePassword.getText();
+        ClienteJpaController clienteJpaC = new ClienteJpaController(emf);
+        try {
+            clienteJpaC.create(new Cliente(usuario, password));
+        } catch (Exception ex) {
+            Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonCrearUsuarioActionPerformed
 
     /**
      * @param args the command line arguments

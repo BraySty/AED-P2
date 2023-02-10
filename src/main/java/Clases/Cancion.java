@@ -34,14 +34,13 @@ public class Cancion implements Serializable {
     private String nombre;
 
     // Relación 1:N
-    @OneToMany(mappedBy="cliente")
+    @OneToMany(mappedBy="cancion")
     private List<ClienteCancion> cancionCliente;
 
     public Cancion() {
     }
 
-    public Cancion(int id, String nombre) {
-        this.id = id;
+    public Cancion(String nombre) {
         this.nombre = nombre;
         cancionCliente = new LinkedList<>();
     }

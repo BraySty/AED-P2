@@ -39,7 +39,7 @@ public class ClienteJpaController {
             em.persist(cliente);
             em.getTransaction().commit();
         } catch (Exception ex) {
-            if (findCancion(cliente.getId()) != null) {
+            if (findCliente(cliente.getId()) != null) {
                 throw new PreexistingEntityException("Cliente " + cliente + " ya existe.", ex);
             }
             throw ex;
@@ -61,7 +61,7 @@ public class ClienteJpaController {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
                 int id = cliente.getId();
-                if (findCancion(id) == null) {
+                if (findCliente(id) == null) {
                     throw new NonexistentEntityException("El cliente " + id + " no existe.");
                 }
             }
@@ -94,15 +94,15 @@ public class ClienteJpaController {
         }
     }
     
-    public List<Cliente> findCancionEntities() {
-        return findCancionEntities(true, -1, -1);
+    public List<Cliente> findClienteEntities() {
+        return findClienteEntities(true, -1, -1);
     }
 
-    public List<Cliente> findCancionEntities(int maxResults, int firstResult) {
-        return findCancionEntities(false, maxResults, firstResult);
+    public List<Cliente> findClienteEntities(int maxResults, int firstResult) {
+        return findClienteEntities(false, maxResults, firstResult);
     }
 
-    private List<Cliente> findCancionEntities(boolean all, int maxResults, int firstResult) {
+    private List<Cliente> findClienteEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
@@ -118,7 +118,7 @@ public class ClienteJpaController {
         }
     }
     
-    public Cliente findCancion(int id) {
+    public Cliente findCliente(int id) {
         EntityManager em = getEntityManager();
         try {
             return em.find(Cliente.class, id);
@@ -127,7 +127,7 @@ public class ClienteJpaController {
         }
     }
     
-    public int getCancionCount() {
+    public int getClienteCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();

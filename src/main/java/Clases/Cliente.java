@@ -38,14 +38,13 @@ public class Cliente implements Serializable {
     private String contraseña;
 
     // Relación 1:N
-    @OneToMany(mappedBy="cancion", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="cliente", cascade = CascadeType.ALL)
     private List<ClienteCancion> cancionCliente;
 
     public Cliente() {
     }
 
-    public Cliente(int id, String nombre, String contraseña) {
-        this.id = id;
+    public Cliente(String nombre, String contraseña) {
         this.nombre = nombre;
         this.contraseña = contraseña;
         cancionCliente = new LinkedList<>();
