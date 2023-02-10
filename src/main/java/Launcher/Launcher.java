@@ -72,6 +72,11 @@ public class Launcher extends javax.swing.JFrame {
         });
 
         jButtonCrearUsuario.setText("Crear usuario");
+        jButtonCrearUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCrearUsuarioActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanelInicioSesionLayout = new javax.swing.GroupLayout(jPanelInicioSesion);
         jPanelInicioSesion.setLayout(jPanelInicioSesionLayout);
@@ -200,7 +205,7 @@ public class Launcher extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
+            .addComponent(jTabbedPanel)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -241,6 +246,10 @@ public class Launcher extends javax.swing.JFrame {
         jLabelUsuario.setText("Usuario: " + usuario);
         
     }//GEN-LAST:event_jButtonLogInActionPerformed
+
+    private void jButtonCrearUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCrearUsuarioActionPerformed
+         // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonCrearUsuarioActionPerformed
 
     /**
      * @param args the command line arguments
