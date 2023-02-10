@@ -170,11 +170,24 @@ public class ClienteCancionJpaController {
         }
     }
     
-    public List<Object[]> findClienteCancionCount() {
+    public List<Object[]> findClienteCancionCountAsc() {
         EntityManager em = getEntityManager();
         String jpql;
         Query query;
-        jpql = "SELECT cc.cancion, cc.cliente, count(cc.cancion), cc.fecha FROM ClienteCancion cc GROUP BY cc.cliente"; 
+        jpql = "SELECT cc.cancion, cc.cliente, count(cc.cancion), cc.fecha FROM ClienteCancion cc GROUP BY cc.cliente ORDER BY count(cc.cancion)"; 
+        try {
+            query = em.createQuery(jpql);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+    
+    public List<Object[]> findClienteCancionCountDesc() {
+        EntityManager em = getEntityManager();
+        String jpql;
+        Query query;
+        jpql = "SELECT cc.cancion, cc.cliente, count(cc.cancion), cc.fecha FROM ClienteCancion cc GROUP BY cc.cliente ORDER BY count(cc.cancion) DESC"; 
         try {
             query = em.createQuery(jpql);
             return query.getResultList();

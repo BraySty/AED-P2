@@ -77,17 +77,7 @@ public class Launcher extends javax.swing.JFrame {
     private void cargarDatos() {
         ClienteCancionJpaController ccJpaC = new ClienteCancionJpaController(emf);
         List<ClienteCancion> asd = ccJpaC.findClienteCancionEntities();
-        List<Object[]> sssss = ccJpaC.findClienteCancionCount();
-//        for (ClienteCancion clienteCancion : asd) {
-//            System.out.println(clienteCancion.toString());
-//            Object[] rowData = new Object[] {
-//                clienteCancion.getCancion().getNombre(),
-//                clienteCancion.getCliente().getNombre(),
-//                12,
-//                clienteCancion.getFecha()
-//            };
-//            addData(rowData);
-//        }
+        List<Object[]> sssss = ccJpaC.findClienteCancionCountDesc();
         for (Object[] ssss : sssss) {
             addData(ssss);
         }
@@ -173,7 +163,7 @@ public class Launcher extends javax.swing.JFrame {
                             .addComponent(jLabelClienteUusuario))
                         .addGap(18, 18, 18)
                         .addGroup(jPanelInicioSesionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldClientePassword, javax.swing.GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE)
+                            .addComponent(jTextFieldClientePassword, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
                             .addComponent(jTextFieldClienteUsuario)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelInicioSesionLayout.createSequentialGroup()
                         .addComponent(jButtonCrearUsuario)
@@ -220,8 +210,8 @@ public class Launcher extends javax.swing.JFrame {
             jPanelHistorialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelHistorialLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 598, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(98, Short.MAX_VALUE))
         );
         jPanelHistorialLayout.setVerticalGroup(
             jPanelHistorialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -269,7 +259,7 @@ public class Launcher extends javax.swing.JFrame {
                             .addComponent(jLabelMariaDBUusuario))
                         .addGap(18, 18, 18)
                         .addGroup(jPanelGestorConexionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldMariaDBPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE)
+                            .addComponent(jTextFieldMariaDBPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
                             .addComponent(jTextFieldMariaDBUsuario)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelGestorConexionLayout.createSequentialGroup()
                         .addComponent(jButtonDefault)

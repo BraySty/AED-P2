@@ -62,7 +62,7 @@
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jTextFieldClientePassword" alignment="0" pref="584" max="32767" attributes="0"/>
+                                  <Component id="jTextFieldClientePassword" alignment="0" pref="607" max="32767" attributes="0"/>
                                   <Component id="jTextFieldClienteUsuario" alignment="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
@@ -146,8 +146,8 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="667" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jScrollPane1" min="-2" pref="598" max="-2" attributes="0"/>
+                      <EmptySpace pref="98" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -240,7 +240,7 @@
                                   </Group>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jTextFieldMariaDBPassword" pref="584" max="32767" attributes="0"/>
+                                      <Component id="jTextFieldMariaDBPassword" pref="607" max="32767" attributes="0"/>
                                       <Component id="jTextFieldMariaDBUsuario" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
