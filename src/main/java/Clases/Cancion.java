@@ -7,6 +7,7 @@ package Clases;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,13 +35,19 @@ public class Cancion implements Serializable {
     private String nombre;
 
     // Relación 1:N
-    @OneToMany(mappedBy="cancion")
+    @OneToMany(mappedBy="cancion", cascade = CascadeType.ALL)
     private List<ClienteCancion> cancionCliente;
 
     public Cancion() {
     }
 
     public Cancion(String nombre) {
+        this.nombre = nombre;
+        cancionCliente = new LinkedList<>();
+    }
+    
+    public Cancion(int id, String nombre) {
+        this.id = id;
         this.nombre = nombre;
         cancionCliente = new LinkedList<>();
     }

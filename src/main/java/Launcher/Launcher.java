@@ -592,6 +592,8 @@ public class Launcher extends javax.swing.JFrame {
 
         jTabbedAdministracion.addTab("Canciones", jPanelDBCanciones);
 
+        jTabbedPanelPrincipal.addTab("Administracion", jTabbedAdministracion);
+
         jLabelMariaDBUusuario.setText("Usuario");
 
         jLabelMariaDBDPassword.setText("Contraseña");
@@ -644,16 +646,14 @@ public class Launcher extends javax.swing.JFrame {
                 .addGroup(jPanelGestorConexionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelMariaDBDPassword)
                     .addComponent(jTextFieldMariaDBPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 368, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 398, Short.MAX_VALUE)
                 .addGroup(jPanelGestorConexionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonAceptar)
                     .addComponent(jButtonDefault))
                 .addContainerGap())
         );
 
-        jTabbedAdministracion.addTab("Ajustes de conexion", jPanelGestorConexion);
-
-        jTabbedPanelPrincipal.addTab("Administracion", jTabbedAdministracion);
+        jTabbedPanelPrincipal.addTab("Ajustes de conexion", jPanelGestorConexion);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
