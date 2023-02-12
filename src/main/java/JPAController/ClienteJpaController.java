@@ -135,6 +135,26 @@ public class ClienteJpaController {
     }
     
     /**
+     * Busca el Cliente por su nombre de usuario
+     * @param usuario String con el nombre de usuario.
+     * @return Regresa el cliente si existe, null si no existe.
+     */
+    public Cliente findCliente(String usuario) {
+        EntityManager em = getEntityManager();
+        Cliente cliente = null;
+        try {
+            TypedQuery<Cliente> query = em.createQuery("SELECT c FROM Cliente c WHERE c.nombre = :name", Cliente.class);
+            query.setParameter("name", usuario);
+            cliente = query.getSingleResult();
+        } catch(NoResultException nre) {
+            System.err.println("El cliente con nombre" + usuario + " no existe.");
+        } finally {
+            em.close();
+        }
+        return cliente;
+    }
+    
+    /**
      * Busca el Cliente por su nombre de usuario y contraseña
      * @param usuario String con el nombre de usuario.
      * @param password String con la contraseña.

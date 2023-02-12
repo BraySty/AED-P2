@@ -31,7 +31,7 @@ public class Cancion implements Serializable {
     @Column(name="canciones_id")
     private int id;
 
-    @Column(name="canciones_nombre", length = 255)
+    @Column(name="canciones_nombre", unique=true, length = 255)
     private String nombre;
 
     // Relación 1:N

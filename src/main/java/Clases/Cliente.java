@@ -31,7 +31,7 @@ public class Cliente implements Serializable {
     @Column(name = "cliente_id")
     private int id;
 
-    @Column(name = "cliente_nombre", length = 255)
+    @Column(name = "cliente_nombre", unique=true, length = 255)
     private String nombre;
 
     @Column(name = "cliente_contraseña", length = 255)

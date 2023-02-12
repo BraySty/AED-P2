@@ -26,10 +26,12 @@ public class ClienteCancion implements Serializable {
     
     private static final long serialVersionUID = 1;
     
+    // Relación N:1
     @ManyToOne
     @JoinColumn(name = "canciones_id")
     private Cancion cancion;
     
+    // Relación N:1
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;

@@ -5,6 +5,7 @@
 package JPAController;
 
 import Clases.ClienteCancion;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -64,7 +65,7 @@ public class ClienteCancionJpaController {
     public boolean update(ClienteCancion cc) {
         EntityManager em = null;
         boolean operacion = false;
-        if (findClienteCancion(cc.getId()) != null) {
+        if (findClienteCancion(cc.getId()) == null) {
             System.out.println("ClienteCancion " + cc + " no existe.");
         } else {
             try {
@@ -93,7 +94,7 @@ public class ClienteCancionJpaController {
         EntityManager em = null;
         boolean operacion = false;
         ClienteCancion clienteCancion = findClienteCancion(id);
-        if (clienteCancion != null) {
+        if (clienteCancion == null) {
             System.out.println("ClienteCancion " + id + " no existe.");
         } else {
             try {
@@ -170,6 +171,12 @@ public class ClienteCancionJpaController {
         }
     }
     
+    /**
+     * Consulta que regresa todas las canciones con los clientes que las cantaron,
+     * cuantas veces y el dia que lo hicieron.
+     * Ordenado de manera ascendente.
+     * @return List<Object[]> con los datos de la consulta.
+     */
     public List<Object[]> findClienteCancionCountAsc() {
         EntityManager em = getEntityManager();
         String jpql;
@@ -183,6 +190,12 @@ public class ClienteCancionJpaController {
         }
     }
     
+    /**
+     * Consulta que regresa todas las canciones con los clientes que las cantaron,
+     * cuantas veces y el dia que lo hicieron.
+     * Ordenado de manera descendiente.
+     * @return List<Object[]> con los datos de la consulta.
+     */
     public List<Object[]> findClienteCancionCountDesc() {
         EntityManager em = getEntityManager();
         String jpql;
@@ -190,6 +203,26 @@ public class ClienteCancionJpaController {
         jpql = "SELECT cc.cancion, cc.cliente, count(cc.cancion), cc.fecha FROM ClienteCancion cc GROUP BY cc.cliente ORDER BY count(cc.cancion) DESC"; 
         try {
             query = em.createQuery(jpql);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+    
+    /**
+     * Consulta que regresa una lista con las canciones repetidas en un 
+     * dia especifico con el numero de veces que se repiten.
+     * @param fecha Date con la fecha de la busqueda.
+     * @return List<Object[]> con los datos de la consulta.
+     */
+    public List<Object[]> findClienteCancionWhereDate(Date fecha) {
+        EntityManager em = getEntityManager();
+        String jpql;
+        Query query;
+        jpql = "SELECT cc.cancion, count(cc.cancion), cc.fecha FROM ClienteCancion cc WHERE cc.fecha = ?1 GROUP BY cc.cancion ORDER BY count(cc.cancion) DESC"; 
+        try {
+            query = em.createQuery(jpql);
+            query.setParameter(1, fecha);
             return query.getResultList();
         } finally {
             em.close();

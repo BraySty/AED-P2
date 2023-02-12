@@ -8,7 +8,9 @@ import Clases.Cancion;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
@@ -126,6 +128,21 @@ public class CancionJpaController {
         } finally {
             em.close();
         }
+    }
+    
+    public Cancion findCancion(String nombre) {
+        EntityManager em = getEntityManager();
+        Cancion cancion = null;
+        try {
+            TypedQuery<Cancion> query = em.createQuery("SELECT c FROM Cancion c WHERE c.nombre = :name", Cancion.class);
+            query.setParameter("name", nombre);
+            cancion = query.getSingleResult();
+        } catch(NoResultException nre) {
+            System.err.println("La cancion con nombre" + nombre + " no existe.");
+        } finally {
+            em.close();
+        }
+        return cancion;
     }
     
     /**
