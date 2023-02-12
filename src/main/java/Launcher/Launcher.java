@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -39,8 +40,8 @@ public class Launcher extends javax.swing.JFrame {
     private String dbUser;
     private String dbPassword;
     boolean error = true;
-    private Cliente cliente;
-    private final String[] titulo = new String[]{"Cancion", "Usuario", "Repeticiones", "Fecha"};
+    private final String[] ordenRepeticiones = new String[]{"Cancion", "Usuario", "Repeticiones", "Fecha"};
+    private final String[] ordenFecha = new String[]{"Cancion","Repeticiones", "Fecha"};
     private final String[] clientesTable = new String[]{"ID", "Usuario", "Contraseña"};
     private final String[] cancionTable = new String[]{"ID", "Cancion"};
     private final String[] historialTable = new String[]{"ID", "Cancion", "Cancion", "Fecha"};
@@ -118,11 +119,15 @@ public class Launcher extends javax.swing.JFrame {
             // Inicializa el combobox
             inicializarBoxModel();
             // Inicializa las tablas con los datos.
-            inicializarTablaPrincipal();
+            inicializarTablaPrincipalOrdenRepeticiones();
             inicializarTablaHistorial();
             inicializarTablaClientes();
             inicializarTablaCanciones();
-            jSpinnerFecha.setEditor(new JSpinner.DateEditor(jSpinnerFecha,"yyyy-mm-dd"));
+            jTextFieldCancionID.setEditable(false);
+            jTextFieldClienteID.setEditable(false);
+            SimpleDateFormat model = new SimpleDateFormat("yyyy-MM-dd");
+            jSpinnerFecha.setEditor(new JSpinner.DateEditor(jSpinnerFecha, model.toPattern()));
+            
         } else {
             // En caso de dar error la conexion, vuelve a repetir toda la operacion.
             inicializarEMF();
@@ -144,7 +149,7 @@ public class Launcher extends javax.swing.JFrame {
     /**
      * Inicializa las tablas al empezar la aplicacion.
      */
-    private void inicializarTablaPrincipal() {
+    private void inicializarTablaPrincipalOrdenRepeticiones() {
         ClienteCancionJpaController ccJpaC = new ClienteCancionJpaController(emf);
         // Crea la nueva tabla.
         DefaultTableModel dtm = new DefaultTableModel() {
@@ -155,9 +160,32 @@ public class Launcher extends javax.swing.JFrame {
             }
         };
         // Añade las columnas a la tabla.
-        dtm.setColumnIdentifiers(titulo);
+        dtm.setColumnIdentifiers(ordenRepeticiones);
         jTableHistorial.setModel(dtm);
         List<Object[]> clienteCancion = ccJpaC.findClienteCancionCountDesc();
+        for (Object[] cc : clienteCancion) {
+            //Pasa la informacion a la pantalla principal.
+            DefaultTableModel dtm2 = (DefaultTableModel)jTableHistorial.getModel();
+            dtm2.addRow(cc);
+        }
+    }
+    
+    public void inicializarTablaPrincipalOrdenFecha() {
+        ClienteCancionJpaController ccJpaC = new ClienteCancionJpaController(emf);
+        // Crea la nueva tabla.
+        DefaultTableModel dtm = new DefaultTableModel() {
+            // Permite seleccionar que celdas son editables.
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == -1;
+            }
+        };
+        // Añade las columnas a la tabla.
+        dtm.setColumnIdentifiers(ordenFecha);
+        jTableHistorial.setModel(dtm);
+        Date fecha = (Date) jSpinnerFecha.getValue();
+        System.out.println(fecha);
+        List<Object[]> clienteCancion = ccJpaC.findClienteCancionWhereDate(fecha);
         for (Object[] cc : clienteCancion) {
             //Pasa la informacion a la pantalla principal.
             DefaultTableModel dtm2 = (DefaultTableModel)jTableHistorial.getModel();
@@ -252,16 +280,15 @@ public class Launcher extends javax.swing.JFrame {
         }
     }
     
-    private String grupoEventoRes() {
+    private void grupoEventoRes() {
         if (jRadioButton1.isSelected()){
-            System.out.println(jRadioButton1.getText());
+            inicializarTablaPrincipalOrdenRepeticiones();
             jSpinnerFecha.setEnabled(false);
         }
         if (jRadioButton2.isSelected()){
-            System.out.println(jRadioButton2.getText());
+            inicializarTablaPrincipalOrdenFecha();
             jSpinnerFecha.setEnabled(true);
         }
-        return "asd";
     }
     
     /**
@@ -314,6 +341,10 @@ public class Launcher extends javax.swing.JFrame {
         jPanelDBHistorial = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTableDBHistorial = new javax.swing.JTable();
+        jButtonHistorialAgregar = new javax.swing.JButton();
+        jButtonHistorialActualizar = new javax.swing.JButton();
+        jButtonHistorialBorrar = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         jPanelDBClientes = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTableDBClientes = new javax.swing.JTable();
@@ -321,21 +352,21 @@ public class Launcher extends javax.swing.JFrame {
         jLabelClienteNombre = new javax.swing.JLabel();
         jLabelClienteContraseña = new javax.swing.JLabel();
         jTextFieldClienteNombre = new javax.swing.JTextField();
-        jSpinnerClienteID = new javax.swing.JSpinner();
         jTextFieldClienteContraseña = new javax.swing.JTextField();
         jButtonClienteBorrar = new javax.swing.JButton();
         jButtonClienteActualizar = new javax.swing.JButton();
         jButtonClienteAgregar = new javax.swing.JButton();
+        jTextFieldClienteID = new javax.swing.JTextField();
         jPanelDBCanciones = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTableDBCanciones = new javax.swing.JTable();
         jLabelCancionesID = new javax.swing.JLabel();
         jLabelCancionNombre = new javax.swing.JLabel();
         jTextFieldCancionNombre = new javax.swing.JTextField();
-        jSpinnerCancionID = new javax.swing.JSpinner();
         jButtonCancionAgregar = new javax.swing.JButton();
         jButtonCancionActualizar = new javax.swing.JButton();
         jButtonCancionesBorrar = new javax.swing.JButton();
+        jTextFieldCancionID = new javax.swing.JTextField();
         jPanelGestorConexion = new javax.swing.JPanel();
         jLabelMariaDBUusuario = new javax.swing.JLabel();
         jLabelMariaDBDPassword = new javax.swing.JLabel();
@@ -345,6 +376,11 @@ public class Launcher extends javax.swing.JFrame {
         jButtonDefault = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jTabbedPanelPrincipal.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -396,7 +432,7 @@ public class Launcher extends javax.swing.JFrame {
                             .addComponent(jLabelCancion))
                         .addGap(18, 18, 18)
                         .addGroup(jPanelInicioSesionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldClientePassword, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+                            .addComponent(jTextFieldClientePassword, javax.swing.GroupLayout.DEFAULT_SIZE, 615, Short.MAX_VALUE)
                             .addComponent(jTextFieldClienteUsuario)
                             .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
@@ -423,7 +459,7 @@ public class Launcher extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jTabbedPanelPrincipal.addTab("Inicio Sesion", jPanelInicioSesion);
+        jTabbedPanelPrincipal.addTab("Seleccionar Cancion", jPanelInicioSesion);
 
         jTableHistorial.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -470,17 +506,17 @@ public class Launcher extends javax.swing.JFrame {
             .addGroup(jPanelHistorialLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 493, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelHistorialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelHistorialLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanelHistorialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jRadioButton1)
                             .addComponent(jRadioButton2))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelHistorialLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jSpinnerFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jSpinnerFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         jPanelHistorialLayout.setVerticalGroup(
             jPanelHistorialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -517,7 +553,35 @@ public class Launcher extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTableDBHistorial.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableDBHistorialMouseClicked(evt);
+            }
+        });
         jScrollPane4.setViewportView(jTableDBHistorial);
+
+        jButtonHistorialAgregar.setText("Agregar");
+        jButtonHistorialAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonHistorialAgregarActionPerformed(evt);
+            }
+        });
+
+        jButtonHistorialActualizar.setText("Actualizar");
+        jButtonHistorialActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonHistorialActualizarActionPerformed(evt);
+            }
+        });
+
+        jButtonHistorialBorrar.setText("Borrar");
+        jButtonHistorialBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonHistorialBorrarActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("jLabel1");
 
         javax.swing.GroupLayout jPanelDBHistorialLayout = new javax.swing.GroupLayout(jPanelDBHistorial);
         jPanelDBHistorial.setLayout(jPanelDBHistorialLayout);
@@ -525,14 +589,37 @@ public class Launcher extends javax.swing.JFrame {
             jPanelDBHistorialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelDBHistorialLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4)
-                .addGap(212, 212, 212))
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 486, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanelDBHistorialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelDBHistorialLayout.createSequentialGroup()
+                        .addGap(73, 73, 73)
+                        .addGroup(jPanelDBHistorialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButtonHistorialAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanelDBHistorialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jButtonHistorialBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jButtonHistorialActualizar))))
+                    .addGroup(jPanelDBHistorialLayout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addComponent(jLabel1)))
+                .addGap(65, 65, 65))
         );
         jPanelDBHistorialLayout.setVerticalGroup(
             jPanelDBHistorialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelDBHistorialLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane4)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelDBHistorialLayout.createSequentialGroup()
+                .addGroup(jPanelDBHistorialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanelDBHistorialLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE))
+                    .addGroup(jPanelDBHistorialLayout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonHistorialAgregar)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonHistorialActualizar)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonHistorialBorrar)))
                 .addContainerGap())
         );
 
@@ -562,13 +649,6 @@ public class Launcher extends javax.swing.JFrame {
 
         jLabelClienteContraseña.setText("Contraseña");
 
-        jSpinnerClienteID.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
-        jSpinnerClienteID.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSpinnerClienteIDStateChanged(evt);
-            }
-        });
-
         jButtonClienteBorrar.setText("Borrar");
         jButtonClienteBorrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -596,35 +676,41 @@ public class Launcher extends javax.swing.JFrame {
             jPanelDBClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelDBClientesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
                 .addGroup(jPanelDBClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelDBClientesLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
                         .addGroup(jPanelDBClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSpinnerClienteID, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextFieldClienteNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextFieldClienteContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabelClienteID, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabelClienteContraseña)
-                            .addComponent(jLabelClienteNombre)))
-                    .addGroup(jPanelDBClientesLayout.createSequentialGroup()
-                        .addGap(66, 66, 66)
+                            .addGroup(jPanelDBClientesLayout.createSequentialGroup()
+                                .addGap(66, 66, 66)
+                                .addGroup(jPanelDBClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButtonClienteAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanelDBClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jButtonClienteBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jButtonClienteActualizar))))
+                            .addGroup(jPanelDBClientesLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanelDBClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabelClienteID, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabelClienteContraseña)
+                                    .addComponent(jLabelClienteNombre))))
+                        .addGap(70, 70, 70))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelDBClientesLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanelDBClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButtonClienteAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanelDBClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jButtonClienteBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jButtonClienteActualizar)))))
-                .addContainerGap())
+                            .addComponent(jTextFieldClienteID, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldClienteNombre, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldClienteContraseña, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())))
         );
         jPanelDBClientesLayout.setVerticalGroup(
             jPanelDBClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelDBClientesLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanelDBClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanelDBClientesLayout.createSequentialGroup()
-                        .addGap(30, 30, 30)
                         .addComponent(jLabelClienteID)
                         .addGap(18, 18, 18)
-                        .addComponent(jSpinnerClienteID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextFieldClienteID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabelClienteNombre)
                         .addGap(18, 18, 18)
@@ -639,9 +725,7 @@ public class Launcher extends javax.swing.JFrame {
                         .addComponent(jButtonClienteActualizar)
                         .addGap(18, 18, 18)
                         .addComponent(jButtonClienteBorrar))
-                    .addGroup(jPanelDBClientesLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -668,13 +752,6 @@ public class Launcher extends javax.swing.JFrame {
         jLabelCancionesID.setText("ID");
 
         jLabelCancionNombre.setText("Nombre");
-
-        jSpinnerCancionID.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
-        jSpinnerCancionID.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSpinnerCancionIDStateChanged(evt);
-            }
-        });
 
         jButtonCancionAgregar.setText("Agregar");
         jButtonCancionAgregar.addActionListener(new java.awt.event.ActionListener() {
@@ -703,34 +780,36 @@ public class Launcher extends javax.swing.JFrame {
             jPanelDBCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelDBCancionesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
                 .addGroup(jPanelDBCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelDBCancionesLayout.createSequentialGroup()
-                        .addGap(7, 7, 7)
-                        .addGroup(jPanelDBCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelCancionNombre)
-                            .addGroup(jPanelDBCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jSpinnerCancionID, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jTextFieldCancionNombre, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabelCancionesID, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanelDBCancionesLayout.createSequentialGroup()
                         .addGap(66, 66, 66)
                         .addGroup(jPanelDBCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButtonCancionAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanelDBCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(jButtonCancionesBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jButtonCancionActualizar)))))
+                                .addComponent(jButtonCancionActualizar))))
+                    .addGroup(jPanelDBCancionesLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanelDBCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelDBCancionesLayout.createSequentialGroup()
+                                .addGap(1, 1, 1)
+                                .addGroup(jPanelDBCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabelCancionNombre)
+                                    .addComponent(jTextFieldCancionNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabelCancionesID, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jTextFieldCancionID, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         jPanelDBCancionesLayout.setVerticalGroup(
             jPanelDBCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelDBCancionesLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanelDBCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanelDBCancionesLayout.createSequentialGroup()
-                        .addGap(50, 50, 50)
                         .addComponent(jLabelCancionesID)
                         .addGap(18, 18, 18)
-                        .addComponent(jSpinnerCancionID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextFieldCancionID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(19, 19, 19)
                         .addComponent(jLabelCancionNombre)
                         .addGap(18, 18, 18)
@@ -741,9 +820,7 @@ public class Launcher extends javax.swing.JFrame {
                         .addComponent(jButtonCancionActualizar)
                         .addGap(18, 18, 18)
                         .addComponent(jButtonCancionesBorrar))
-                    .addGroup(jPanelDBCancionesLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -784,7 +861,7 @@ public class Launcher extends javax.swing.JFrame {
                             .addComponent(jLabelMariaDBUusuario))
                         .addGap(18, 18, 18)
                         .addGroup(jPanelGestorConexionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldMariaDBPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+                            .addComponent(jTextFieldMariaDBPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 615, Short.MAX_VALUE)
                             .addComponent(jTextFieldMariaDBUsuario)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelGestorConexionLayout.createSequentialGroup()
                         .addComponent(jButtonDefault)
@@ -852,7 +929,7 @@ public class Launcher extends javax.swing.JFrame {
         } else {
             ClienteCancionJpaController ccJpaC = new ClienteCancionJpaController(emf);
             ccJpaC.create(new ClienteCancion((Cancion)jComboBox1.getSelectedItem(), cliente, fecha));
-            inicializarTablaPrincipal();
+            inicializarTablaPrincipalOrdenRepeticiones();
         }
     }//GEN-LAST:event_jButtonLogInActionPerformed
 
@@ -893,29 +970,19 @@ public class Launcher extends javax.swing.JFrame {
             int ID = (int) jTableDBClientes.getValueAt(row, 0);
             String nombre = (String) jTableDBClientes.getValueAt(row, 1);
             String contraseña = (String) jTableDBClientes.getValueAt(row, 2);
-            jSpinnerClienteID.setValue(ID);
+            jTextFieldClienteID.setText(ID + "");
             jTextFieldClienteNombre.setText(nombre);
             jTextFieldClienteContraseña.setText(contraseña);
         }
     }//GEN-LAST:event_jTableDBClientesMouseClicked
 
-    private void jSpinnerClienteIDStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerClienteIDStateChanged
-        int id = (int)jSpinnerClienteID.getValue();
-        if (id < 1) {
-            jSpinnerClienteID.setValue(1);
-        }
-    }//GEN-LAST:event_jSpinnerClienteIDStateChanged
-
-    private void jSpinnerCancionIDStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerCancionIDStateChanged
-        int id = (int)jSpinnerCancionID.getValue();
-        if (id < 1) {
-            jSpinnerCancionID.setValue(1);
-        }
-    }//GEN-LAST:event_jSpinnerCancionIDStateChanged
-
+    /**
+     * INSERT Cancion.
+     * @param evt 
+     */
     private void jButtonCancionAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancionAgregarActionPerformed
         CancionJpaController cancionJPAC = new CancionJpaController(emf);
-        int id = (int) jSpinnerCancionID.getValue();
+        int id = Integer.parseInt(jTextFieldCancionID.getText());
         String nombre = jTextFieldCancionNombre.getText();
         if (cancionJPAC.findCancion(id) == null) {
             cancionJPAC.create(new Cancion(nombre));
@@ -925,9 +992,13 @@ public class Launcher extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButtonCancionAgregarActionPerformed
 
+    /**
+     * DELETE Cancion.
+     * @param evt 
+     */
     private void jButtonCancionesBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancionesBorrarActionPerformed
         CancionJpaController cancionJPAC = new CancionJpaController(emf);
-        int id = (int) jSpinnerCancionID.getValue();
+        int id = Integer.parseInt(jTextFieldCancionID.getText());
         if (cancionJPAC.findCancion(id) == null) {
             JOptionPane.showMessageDialog(this, "Esta cancion no existe", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
@@ -936,9 +1007,13 @@ public class Launcher extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButtonCancionesBorrarActionPerformed
 
+    /**
+     * UPDATE Cancion.
+     * @param evt 
+     */
     private void jButtonCancionActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancionActualizarActionPerformed
         CancionJpaController cancionJPAC = new CancionJpaController(emf);
-        int id = (int) jSpinnerCancionID.getValue();
+        int id = Integer.parseInt(jTextFieldCancionID.getText());
         String nombre = jTextFieldCancionNombre.getText();
         if (cancionJPAC.findCancion(id) == null) {
             JOptionPane.showMessageDialog(this, "Esta cliente no existe", "Error", JOptionPane.ERROR_MESSAGE);
@@ -948,45 +1023,57 @@ public class Launcher extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButtonCancionActualizarActionPerformed
 
+    /**
+     * DELETE Cliente.
+     * @param evt 
+     */
     private void jButtonClienteBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonClienteBorrarActionPerformed
         ClienteJpaController clienteJpaC = new ClienteJpaController(emf);
-        int id = (int) jSpinnerClienteID.getValue();
+        int id = Integer.parseInt(jTextFieldClienteID.getText());
         if (clienteJpaC.findCliente(id) == null) {
             JOptionPane.showMessageDialog(this, "Esta cliente no existe", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             clienteJpaC.delete(id);
-            inicializarTablaCanciones();
+            inicializarTablaClientes();
         }
     }//GEN-LAST:event_jButtonClienteBorrarActionPerformed
 
+    /**
+     * UPDATE Cliente.
+     * @param evt 
+     */
     private void jButtonClienteActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonClienteActualizarActionPerformed
         ClienteJpaController clienteJpaC = new ClienteJpaController(emf);
-        int id = (int) jSpinnerClienteID.getValue();
+        int id = Integer.parseInt(jTextFieldClienteID.getText());
         String nombre = jTextFieldClienteNombre.getText();
         String contraseña = jTextFieldClienteContraseña.getText();
         if (clienteJpaC.findCliente(id) == null) {
-            clienteJpaC.update(new Cliente(nombre, contraseña));
-            inicializarTablaCanciones();
+            JOptionPane.showMessageDialog(this, "Esta cliente no existe", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Este cliente ya existe", "Error", JOptionPane.ERROR_MESSAGE);
+            clienteJpaC.update(new Cliente(id, nombre, contraseña));
+            inicializarTablaClientes();
         }
     }//GEN-LAST:event_jButtonClienteActualizarActionPerformed
 
+    /**
+     * INSERT Cliente.
+     * @param evt 
+     */
     private void jButtonClienteAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonClienteAgregarActionPerformed
         ClienteJpaController clienteJpaC = new ClienteJpaController(emf);
-        int id = (int) jSpinnerClienteID.getValue();
+        int id = Integer.parseInt(jTextFieldClienteID.getText());
         String nombre = jTextFieldClienteNombre.getText();
         String contraseña = jTextFieldClienteContraseña.getText();
         if (clienteJpaC.findCliente(id) == null) {
             JOptionPane.showMessageDialog(this, "Esta cancion no existe", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             clienteJpaC.create(new Cliente(nombre, contraseña));
-            inicializarTablaCanciones();
+            inicializarTablaClientes();
         }
     }//GEN-LAST:event_jButtonClienteAgregarActionPerformed
 
     private void jSpinnerFechaStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerFechaStateChanged
-        
+        inicializarTablaPrincipalOrdenFecha();
     }//GEN-LAST:event_jSpinnerFechaStateChanged
 
     private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
@@ -1002,10 +1089,30 @@ public class Launcher extends javax.swing.JFrame {
         if(evt.getClickCount() == 2) {
             int ID = (int) jTableDBCanciones.getValueAt(row, 0);
             String nombre = (String) jTableDBCanciones.getValueAt(row, 1);
-            jSpinnerCancionID.setValue(ID);
+            jTextFieldCancionID.setText(ID + "");
             jTextFieldCancionNombre.setText(nombre);
         }
     }//GEN-LAST:event_jTableDBCancionesMouseClicked
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        emf.close();
+    }//GEN-LAST:event_formWindowClosing
+
+    private void jTableDBHistorialMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableDBHistorialMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTableDBHistorialMouseClicked
+
+    private void jButtonHistorialAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonHistorialAgregarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonHistorialAgregarActionPerformed
+
+    private void jButtonHistorialActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonHistorialActualizarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonHistorialActualizarActionPerformed
+
+    private void jButtonHistorialBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonHistorialBorrarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonHistorialBorrarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1053,8 +1160,12 @@ public class Launcher extends javax.swing.JFrame {
     private javax.swing.JButton jButtonClienteBorrar;
     private javax.swing.JButton jButtonCrearUsuario;
     private javax.swing.JButton jButtonDefault;
+    private javax.swing.JButton jButtonHistorialActualizar;
+    private javax.swing.JButton jButtonHistorialAgregar;
+    private javax.swing.JButton jButtonHistorialBorrar;
     private javax.swing.JButton jButtonLogIn;
     private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelCancion;
     private javax.swing.JLabel jLabelCancionNombre;
     private javax.swing.JLabel jLabelCancionesID;
@@ -1077,8 +1188,6 @@ public class Launcher extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JSpinner jSpinnerCancionID;
-    private javax.swing.JSpinner jSpinnerClienteID;
     private javax.swing.JSpinner jSpinnerFecha;
     private javax.swing.JTabbedPane jTabbedAdministracion;
     private javax.swing.JTabbedPane jTabbedPanelPrincipal;
@@ -1086,8 +1195,10 @@ public class Launcher extends javax.swing.JFrame {
     private javax.swing.JTable jTableDBClientes;
     private javax.swing.JTable jTableDBHistorial;
     private javax.swing.JTable jTableHistorial;
+    private javax.swing.JTextField jTextFieldCancionID;
     private javax.swing.JTextField jTextFieldCancionNombre;
     private javax.swing.JTextField jTextFieldClienteContraseña;
+    private javax.swing.JTextField jTextFieldClienteID;
     private javax.swing.JTextField jTextFieldClienteNombre;
     private javax.swing.JTextField jTextFieldClientePassword;
     private javax.swing.JTextField jTextFieldClienteUsuario;
