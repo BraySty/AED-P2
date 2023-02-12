@@ -14,7 +14,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.EntityManagerFactory;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -114,7 +113,7 @@ public class Data {
         try {
             fecha = formatter.parse(date);
         } catch (ParseException ex) {
-            Exceptions.printStackTrace(ex);
+            ex.printStackTrace();
         }
         ClienteCancion[] cc = new ClienteCancion[] {
             new ClienteCancion(canciones[3], clientes[1], fecha),
@@ -158,7 +157,7 @@ public class Data {
         try {
             fecha = formatter.parse(date);
         } catch (ParseException ex) {
-            Exceptions.printStackTrace(ex);
+            ex.printStackTrace();
         }
         ClienteCancion[] cc2 = new ClienteCancion[] {
             new ClienteCancion(canciones[3], clientes[1], fecha),
@@ -202,7 +201,7 @@ public class Data {
         try {
             fecha = formatter.parse(date);
         } catch (ParseException ex) {
-            Exceptions.printStackTrace(ex);
+            ex.printStackTrace();
         }
         ClienteCancion[] cc3 = new ClienteCancion[] {
             new ClienteCancion(canciones[3], clientes[1], fecha),
@@ -246,7 +245,7 @@ public class Data {
         try {
             fecha = formatter.parse(date);
         } catch (ParseException ex) {
-            Exceptions.printStackTrace(ex);
+            ex.printStackTrace();
         }
         ClienteCancion[] cc4 = new ClienteCancion[] {
             new ClienteCancion(canciones[3], clientes[1], fecha),
