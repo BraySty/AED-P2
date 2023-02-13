@@ -333,7 +333,7 @@ public class Launcher extends javax.swing.JFrame {
             Properties props = new Properties();
             props.setProperty("javax.persistence.jdbc.url", "jdbc:mariadb://localhost:3306/" + dataBase + "?createDatabaseIfNotExist=true");
             props.setProperty("javax.persistence.jdbc.user", dbUser);
-            props.setProperty("javax.persistence.jdbc.javax.persistence.jdbc.password", dbPassword);
+            props.setProperty("javax.persistence.jdbc.password", dbPassword);
             emfLocal = Persistence.createEntityManagerFactory("persistencia", props);
             error = true;
         } catch (ServiceException se) {
