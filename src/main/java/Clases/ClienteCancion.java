@@ -54,6 +54,13 @@ public class ClienteCancion implements Serializable {
         this.fecha = fecha;
     }
 
+    public ClienteCancion(int id, Cancion cancion, Cliente cliente, Date fecha) {
+        this.cancion = cancion;
+        this.cliente = cliente;
+        this.id = id;
+        this.fecha = fecha;
+    }
+    
     public Cancion getCancion() {
         return cancion;
     }

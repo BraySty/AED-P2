@@ -43,6 +43,7 @@ public class Launcher extends javax.swing.JFrame {
     private String dbPassword;
     // Booleano que verifica que la conexion ex exitosa.
     private boolean error = true;
+    private boolean testDat = false;
     // String con los nombres de las filas de cada tabla.
     private final String[] ordenRepeticiones = new String[]{"Cancion", "Usuario", "Repeticiones", "Fecha"};
     private final String[] ordenFecha = new String[]{"Cancion","Repeticiones", "Fecha"};
@@ -93,6 +94,10 @@ public class Launcher extends javax.swing.JFrame {
                 dbPassword = "";
             }
             saveOptions();
+            int respuesta = JOptionPane.showConfirmDialog(this, "Configuracion inicial.\n¿Añadir datos de prueba?.", "Datos de prueba", JOptionPane.OK_OPTION);
+            if (respuesta == 0) {
+                testDat = true;
+            }
         }
     }
     
@@ -121,6 +126,12 @@ public class Launcher extends javax.swing.JFrame {
         // Crea el EMF con los datos de conexion.
         emf = setEMF();
         if (emf != null) {
+            if (testDat) {
+                Data testData = new Data();
+                testData.datosDePrueba(emf);
+                inicializarComponentes();
+                testDat = false;
+            }
             inicializarComponentes();
         } else {
             // En caso de dar error la conexion, vuelve a repetir toda la operacion.
@@ -152,7 +163,6 @@ public class Launcher extends javax.swing.JFrame {
         CancionJpaController cancionJpaC = new CancionJpaController(emf);
         List<Cancion> cancion = cancionJpaC.findCancionEntities();
         dcb.addAll(cancion);
-        dcb.setSelectedItem("Seleccione una cancion.");
         jComboBox1.setModel(dcb);
     }
     
@@ -999,15 +1009,19 @@ public class Launcher extends javax.swing.JFrame {
     private void jButtonLogInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLogInActionPerformed
         String usuario = jTextFieldClienteUsuario.getText();
         String password = jTextFieldClientePassword.getText();
-        ClienteJpaController clienteJpaC = new ClienteJpaController(emf);
-        Cliente cliente = clienteJpaC.findCliente(usuario, password);
-        Date fecha = new Date();
-        if (cliente == null) {
-            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrecto", "Error", JOptionPane.ERROR_MESSAGE);
+        if (jComboBox1.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ninguna cancion.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            ClienteCancionJpaController ccJpaC = new ClienteCancionJpaController(emf);
-            ccJpaC.create(new ClienteCancion((Cancion)jComboBox1.getSelectedItem(), cliente, fecha));
-            inicializarTablaPrincipalOrdenRepeticiones();
+            ClienteJpaController clienteJpaC = new ClienteJpaController(emf);
+            Cliente cliente = clienteJpaC.findCliente(usuario, password);
+            Date fecha = new Date();
+            if (cliente == null) {
+                JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrecto.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                ClienteCancionJpaController ccJpaC = new ClienteCancionJpaController(emf);
+                ccJpaC.create(new ClienteCancion((Cancion)jComboBox1.getSelectedItem(), cliente, fecha));
+                inicializarTablaPrincipalOrdenRepeticiones();
+            }
         }
     }//GEN-LAST:event_jButtonLogInActionPerformed
 
@@ -1021,7 +1035,12 @@ public class Launcher extends javax.swing.JFrame {
         String password = jTextFieldClientePassword.getText();
         if (!usuario.equals("") && !password.equals("")) {
             ClienteJpaController clienteJpaC = new ClienteJpaController(emf);
-            clienteJpaC.create(new Cliente(usuario, password));
+            Cliente cliente = clienteJpaC.findCliente(usuario, password);
+            if (cliente != null) {
+                JOptionPane.showMessageDialog(this, "Usuario ya existe", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                clienteJpaC.create(new Cliente(usuario, password));
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Uno de los campos esta vacio", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -1078,13 +1097,14 @@ public class Launcher extends javax.swing.JFrame {
      */
     private void jButtonCancionAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancionAgregarActionPerformed
         CancionJpaController cancionJPAC = new CancionJpaController(emf);
-        int id = (int) jSpinnerCancionID.getValue();
         String nombre = jTextFieldCancionNombre.getText();
-        if (cancionJPAC.findCancion(id) == null) {
+        Cancion cancion = cancionJPAC.findCancion(nombre);
+        if (cancion == null) {
             cancionJPAC.create(new Cancion(nombre));
             inicializarTablaCanciones();
         } else {
             JOptionPane.showMessageDialog(this, "Esta cancion ya existe", "Error", JOptionPane.ERROR_MESSAGE);
+            jSpinnerCancionID.setValue(cancion.getId());
         }
     }//GEN-LAST:event_jButtonCancionAgregarActionPerformed
 
@@ -1127,7 +1147,7 @@ public class Launcher extends javax.swing.JFrame {
         ClienteJpaController clienteJpaC = new ClienteJpaController(emf);
         int id = (int) jSpinnerClienteID.getValue();
         if (clienteJpaC.findCliente(id) == null) {
-            JOptionPane.showMessageDialog(this, "Esta cliente no existe", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Este cliente no existe", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             clienteJpaC.delete(id);
             inicializarTablaClientes();
@@ -1144,7 +1164,7 @@ public class Launcher extends javax.swing.JFrame {
         String nombre = jTextFieldClienteNombre.getText();
         String contraseña = jTextFieldClienteContraseña.getText();
         if (clienteJpaC.findCliente(id) == null) {
-            JOptionPane.showMessageDialog(this, "Esta cliente no existe", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Este cliente no existe", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             clienteJpaC.update(new Cliente(id, nombre, contraseña));
             inicializarTablaClientes();
@@ -1157,11 +1177,13 @@ public class Launcher extends javax.swing.JFrame {
      */
     private void jButtonClienteAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonClienteAgregarActionPerformed
         ClienteJpaController clienteJpaC = new ClienteJpaController(emf);
-        int id = (int) jSpinnerClienteID.getValue();
         String nombre = jTextFieldClienteNombre.getText();
         String contraseña = jTextFieldClienteContraseña.getText();
-        if (clienteJpaC.findCliente(id) != null) {
-            JOptionPane.showMessageDialog(this, "Esta cancion ya existe", "Error", JOptionPane.ERROR_MESSAGE);
+        Cliente cliente = clienteJpaC.findCliente(nombre);
+        if (cliente != null) {
+            JOptionPane.showMessageDialog(this, "Este cliente ya existe", "Error", JOptionPane.ERROR_MESSAGE);
+            jSpinnerClienteID.setValue(cliente.getId());
+            jTextFieldClienteContraseña.setText(cliente.getContraseña());
         } else {
             clienteJpaC.create(new Cliente(nombre, contraseña));
             inicializarTablaClientes();
@@ -1227,7 +1249,7 @@ public class Launcher extends javax.swing.JFrame {
         Cancion cancion = cancionJpaC.findCancion(jTextFieldHistorialCancion.getText());
         Date fecha = (Date) jSpinnerHistorialFecha.getValue();
         if (ccJpaC.findClienteCancion(id) != null) {
-            JOptionPane.showMessageDialog(this, "Esta cancion ya existe.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Este registro ya existe.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             if (cliente == null) {
                 JOptionPane.showMessageDialog(this, "Este cliente no existe.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -1249,14 +1271,14 @@ public class Launcher extends javax.swing.JFrame {
         Cancion cancion = cancionJpaC.findCancion(jTextFieldHistorialCancion.getText());
         Date fecha = (Date) jSpinnerHistorialFecha.getValue();
         if (ccJpaC.findClienteCancion(id) == null) {
-            JOptionPane.showMessageDialog(this, "Esta cancion no existe.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Este registro no existe.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             if (cliente == null) {
                 JOptionPane.showMessageDialog(this, "Este cliente no existe.", "Error", JOptionPane.ERROR_MESSAGE);
             } else if (cancion == null) {
                 JOptionPane.showMessageDialog(this, "Esta cancion no existe.", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                ccJpaC.update(new ClienteCancion(cancion, cliente, fecha));
+                ccJpaC.update(new ClienteCancion(id, cancion, cliente, fecha));
                 inicializarTablaHistorial();
             }
         }
@@ -1266,7 +1288,7 @@ public class Launcher extends javax.swing.JFrame {
         ClienteCancionJpaController ccJpaC = new ClienteCancionJpaController(emf);
         int id = (int) jSpinnerHistorialID.getValue();
         if (ccJpaC.findClienteCancion(id) == null) {
-            JOptionPane.showMessageDialog(this, "Esta cancion no existe.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Este registro no existe.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             ccJpaC.delete(id);
             inicializarTablaHistorial();

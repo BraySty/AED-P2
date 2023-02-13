@@ -38,7 +38,8 @@ public class CancionJpaController {
     public boolean create(Cancion cancion) {
         EntityManager em = null;
         boolean operacion = false;
-        if (findCancion(cancion.getId()) != null) {
+        if (findCancion(cancion.getNombre()) != null) {
+            operacion = false;
             System.out.println("Cancion " + cancion + " ya existe.");
         } else {
             try {
@@ -130,6 +131,11 @@ public class CancionJpaController {
         }
     }
     
+    /**
+     * Busca la cancion por su nombre.
+     * @param nombre String con el nombre.
+     * @return Regresa la cancion si existe, null si no existe.
+     */
     public Cancion findCancion(String nombre) {
         EntityManager em = getEntityManager();
         Cancion cancion = null;

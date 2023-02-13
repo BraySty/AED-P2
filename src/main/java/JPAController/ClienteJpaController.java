@@ -38,7 +38,7 @@ public class ClienteJpaController {
     public boolean create(Cliente cliente) {
         EntityManager em = null;
         boolean operacion = false;
-        if (findCliente(cliente.getId()) != null) {
+        if (findCliente(cliente.getNombre()) != null) {
                 System.out.println("Cliente " + cliente + " ya existe.");
         } else {
             try {

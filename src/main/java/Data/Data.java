@@ -284,6 +284,124 @@ public class Data {
         for (ClienteCancion clienteCancion : cc4) {
             ccJpaC.create(clienteCancion);
         }
+        
+        date = "2023-02-14";
+        try {
+            fecha = formatter.parse(date);
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+        ClienteCancion[] cc5 = new ClienteCancion[] {
+            new ClienteCancion(canciones[3], clientes[1], fecha),
+            new ClienteCancion(canciones[13], clientes[1], fecha),
+            new ClienteCancion(canciones[21], clientes[6], fecha),
+            new ClienteCancion(canciones[22], clientes[13], fecha),
+            new ClienteCancion(canciones[25], clientes[14], fecha),
+            new ClienteCancion(canciones[3], clientes[15], fecha),
+            new ClienteCancion(canciones[15], clientes[12], fecha),
+            new ClienteCancion(canciones[14], clientes[11], fecha),
+            new ClienteCancion(canciones[9], clientes[1], fecha),
+            new ClienteCancion(canciones[7], clientes[7], fecha),
+            new ClienteCancion(canciones[7], clientes[1], fecha),
+            
+            new ClienteCancion(canciones[3], clientes[3], fecha),
+            new ClienteCancion(canciones[13], clientes[2], fecha),
+            new ClienteCancion(canciones[21], clientes[2], fecha),
+            new ClienteCancion(canciones[22], clientes[3], fecha),
+            new ClienteCancion(canciones[3], clientes[5], fecha),
+            new ClienteCancion(canciones[3], clientes[6], fecha),
+            new ClienteCancion(canciones[21], clientes[13], fecha),
+            new ClienteCancion(canciones[22], clientes[13], fecha),
+            new ClienteCancion(canciones[25], clientes[13], fecha),
+            new ClienteCancion(canciones[3], clientes[16], fecha),
+            new ClienteCancion(canciones[15], clientes[14], fecha),
+            new ClienteCancion(canciones[14], clientes[7], fecha),
+            new ClienteCancion(canciones[9], clientes[7], fecha),
+            new ClienteCancion(canciones[7], clientes[7], fecha),
+            new ClienteCancion(canciones[7], clientes[7], fecha),
+        };
+        
+        for (ClienteCancion clienteCancion : cc5) {
+            ccJpaC.create(clienteCancion);
+        }
+        
+        date = "2023-02-15";
+        try {
+            fecha = formatter.parse(date);
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+        ClienteCancion[] cc6 = new ClienteCancion[] {
+            new ClienteCancion(canciones[3], clientes[1], fecha),
+            new ClienteCancion(canciones[13], clientes[1], fecha),
+            new ClienteCancion(canciones[21], clientes[1], fecha),
+            new ClienteCancion(canciones[22], clientes[6], fecha),
+            new ClienteCancion(canciones[3], clientes[4], fecha),
+            new ClienteCancion(canciones[3], clientes[8], fecha),
+            new ClienteCancion(canciones[21], clientes[6], fecha),
+            new ClienteCancion(canciones[22], clientes[13], fecha),
+            new ClienteCancion(canciones[25], clientes[14], fecha),
+            new ClienteCancion(canciones[3], clientes[15], fecha),
+            new ClienteCancion(canciones[15], clientes[12], fecha),
+            new ClienteCancion(canciones[14], clientes[11], fecha),
+            new ClienteCancion(canciones[9], clientes[1], fecha),
+            new ClienteCancion(canciones[7], clientes[7], fecha),
+            new ClienteCancion(canciones[7], clientes[1], fecha),
+            
+            new ClienteCancion(canciones[3], clientes[3], fecha),
+            new ClienteCancion(canciones[13], clientes[2], fecha),
+            new ClienteCancion(canciones[21], clientes[2], fecha),
+            new ClienteCancion(canciones[22], clientes[3], fecha),
+            new ClienteCancion(canciones[3], clientes[5], fecha),
+            new ClienteCancion(canciones[3], clientes[6], fecha),
+            new ClienteCancion(canciones[15], clientes[14], fecha),
+            new ClienteCancion(canciones[14], clientes[7], fecha),
+            new ClienteCancion(canciones[9], clientes[7], fecha),
+            new ClienteCancion(canciones[7], clientes[7], fecha),
+            new ClienteCancion(canciones[7], clientes[7], fecha),
+        };
+        
+        for (ClienteCancion clienteCancion : cc6) {
+            ccJpaC.create(clienteCancion);
+        }
+        
+        date = "2023-02-16";
+        try {
+            fecha = formatter.parse(date);
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+        ClienteCancion[] cc7 = new ClienteCancion[] {
+            new ClienteCancion(canciones[3], clientes[1], fecha),
+            new ClienteCancion(canciones[13], clientes[1], fecha),
+            new ClienteCancion(canciones[21], clientes[1], fecha),
+            new ClienteCancion(canciones[22], clientes[6], fecha),
+            new ClienteCancion(canciones[3], clientes[4], fecha),
+            new ClienteCancion(canciones[3], clientes[8], fecha),
+            new ClienteCancion(canciones[21], clientes[6], fecha),
+            new ClienteCancion(canciones[22], clientes[13], fecha),
+            new ClienteCancion(canciones[25], clientes[14], fecha),
+            new ClienteCancion(canciones[3], clientes[15], fecha),
+            new ClienteCancion(canciones[15], clientes[12], fecha),
+            new ClienteCancion(canciones[14], clientes[11], fecha),
+            new ClienteCancion(canciones[21], clientes[2], fecha),
+            new ClienteCancion(canciones[22], clientes[3], fecha),
+            new ClienteCancion(canciones[3], clientes[5], fecha),
+            new ClienteCancion(canciones[3], clientes[6], fecha),
+            new ClienteCancion(canciones[21], clientes[13], fecha),
+            new ClienteCancion(canciones[22], clientes[13], fecha),
+            new ClienteCancion(canciones[25], clientes[13], fecha),
+            new ClienteCancion(canciones[3], clientes[16], fecha),
+            new ClienteCancion(canciones[15], clientes[14], fecha),
+            new ClienteCancion(canciones[14], clientes[7], fecha),
+            new ClienteCancion(canciones[9], clientes[8], fecha),
+            new ClienteCancion(canciones[7], clientes[8], fecha),
+            new ClienteCancion(canciones[7], clientes[8], fecha),
+        };
+        
+        for (ClienteCancion clienteCancion : cc7) {
+            ccJpaC.create(clienteCancion);
+        }
     }
     
 }

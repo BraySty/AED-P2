@@ -200,7 +200,7 @@ public class ClienteCancionJpaController {
         EntityManager em = getEntityManager();
         String jpql;
         Query query;
-        jpql = "SELECT cc.cancion, cc.cliente, count(cc.cancion), cc.fecha FROM ClienteCancion cc GROUP BY cc.cliente ORDER BY count(cc.cancion) DESC"; 
+        jpql = "SELECT cc.cancion, cc.cliente, count(cc.cancion), cc.fecha FROM ClienteCancion cc GROUP BY cc.cliente, cc.fecha ORDER BY count(cc.cancion) DESC"; 
         try {
             query = em.createQuery(jpql);
             return query.getResultList();

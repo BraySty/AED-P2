@@ -28,21 +28,6 @@
             <artifactId>hibernate-entitymanager</artifactId>           
             <version>5.6.14.Final</version>       
         </dependency>
-        <dependency>
-            <groupId>unknown.binary</groupId>
-            <artifactId>org-openide-util-lookup</artifactId>
-            <version>SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>unknown.binary</groupId>
-            <artifactId>org-openide-util</artifactId>
-            <version>SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.external</groupId>
-            <artifactId>ValidationAPI</artifactId>
-            <version>RELEASE90</version>
-        </dependency>
     </dependencies>
     <name>Practica2_BrayStyvenHenaoLopez</name>
     <repositories>
